@@ -1,0 +1,10 @@
+.\morgs-venv\Scripts\activate
+cd C:\Users\Samuel Jansen\Morgs
+morgs.py
+
+
+virtualenv --system-site-packages -p python3 ./venv
+.\venv\Scripts\activate
+pip install --upgrade pip
+pip list
+deactivate
