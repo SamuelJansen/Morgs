@@ -65,6 +65,57 @@ upSound = gl.getSound('Sounds/Up.wav')
 downSound = gl.getSound('Sounds/Down.wav')
 leftSound = gl.getSound('Sounds/Left.wav')
 #"""
+objects['menu'] = gl.Object(
+    'menu',
+    [200,200],
+    100,
+    [200,200],
+    .5,
+    game
+)
+objects['menu2'] = gl.Object(
+    'menu2',
+    [200,200],
+    100,
+    [200,500],
+    .5,
+    game
+)
+objects['menu3'] = gl.Object(
+    'menu3',
+    [200,200],
+    10,
+    [700,700],
+    .5,
+    game
+)
+objects['menu4'] = gl.Object(
+    'menu4',
+    [200,200],
+    10,
+    [800,800],
+    .5,
+    game
+)
+objects['menu5'] = gl.Object(
+    'menu5',
+    [200,200],
+    10,
+    [500,900],
+    .5,
+    game
+)
+objects['menu6'] = gl.Object(
+    'menu6',
+    [200,200],
+    10,
+    [700,100],
+    .5,
+    game
+)
+uxElements = {}
+uxElements['menu'] = gl.UXSurface([200,200],[200,200],game)
+
 endGame = False
 arrow = gl.ArrowKey()
 mouse = gl.Mouse(game)
@@ -107,10 +158,21 @@ while game.playing :
                 objects['HellenFrost' + str(i)].updatePosition(move,objects,g)
         #"""
         #'''
+        move = [np.random.randint(3)-1,np.random.randint(3)-1]
+        objects['menu3'].updatePosition(move,objects,g)
+        move = [np.random.randint(3)-1,np.random.randint(3)-1]
+        objects['menu4'].updatePosition(move,objects,g)
+        move = [np.random.randint(3)-1,np.random.randint(3)-1]
+        objects['menu5'].updatePosition(move,objects,g)
+        move = [np.random.randint(3)-1,np.random.randint(3)-1]
+        objects['menu6'].updatePosition(move,objects,g)
 
     frame.update(now.time(),screen,game)
     if frame.new :
+        # objects['menu'].rect.move_ip(0,1)
+        objects['menu'].updatePosition([0,1],objects,game)
         screen.blit(objects,frame,game)
+        # screen.draw(uxElements,frame,game)
 
 pg.quit()
 print(gl.imageLibrary)

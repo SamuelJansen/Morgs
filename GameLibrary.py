@@ -106,8 +106,8 @@ class Game:
         fps     --> frames per second
         apf     --> actions per frame'''
         self.name = name
-        self.imagePath = 'Images'
-        self.soundPath = 'Sounds'
+        self.imagePath = 'resourses/images/'
+        self.soundPath = 'resourses/souds/'
         self.color = colors
 
         self.scaleRange = scaleRange
@@ -152,6 +152,7 @@ class Game:
         self.playing = True
         pg.display.update()
 
+
 class Setting():
     def __init__(self,lineScript):
         self.setting = lineScript
@@ -170,9 +171,12 @@ class Object:
         self.size[0] = int(np.ceil(self.size[0] * self.scaleFactor))
         self.size[1] = int(np.ceil(self.size[1] * self.scaleFactor))
 
-        self.imagePath = 'Images/' + self.name + '.png'
+        self.imagePath = g.imagePath + self.name + '.png'
         ###self.img = pg.transform.smoothscale(getImage(self.imagePath),self.size)
-        self.img = pg.transform.smoothscale(getImage(self.imagePath),self.size)
+        try :
+            self.img = pg.transform.smoothscale(getImage(self.imagePath),self.size)
+        except :
+            self.img = pg.transform.smoothscale(getImage(g.imagePath+'standardImage.png'),self.size)
         self.imgSurface = pg.Surface(self.size,pg.HWSURFACE|pg.SRCALPHA)#.convert_alpha()
         self.imgSurface.blit(self.img, (0,0))
 
@@ -185,37 +189,26 @@ class Object:
         '''
         It updates the object position
         position(move,g)'''
+        originalRect = self.rect.copy()
         if move[0]!=0 or move[1]!=0 :
             module = ( (move[0]**2+move[1]**2)**(1/2) ) / self.velocity
-            ###- This (below) is because self.rect can only be integer
-            horizontal = move[0]/module
-            vertical = move[1]/module
-            newRect = pg.Rect(
-                self.position[0]+horizontal,
-                self.position[1]+vertical,
-                self.size[0],
-                self.size[1]
-            )
-            itDidntCollide = True
+            # objects['menu'].rect.move(0,1)
+            self.rect.move_ip(move[0]/module,move[1]/module)
+            objectsRectList = [] ###- it needs to come from imput
             for objectName,o in objects.items() :
-                if (self!=o) and (newRect.colliderect(o.rect)) :
-                    itDidntCollide = False
-            itDidntCollide = True
-            if itDidntCollide :
-                self.position[0] += horizontal
-                self.position[1] += vertical
-                """
-                if horizontal<0 and self.rect.left<=0 :
-                    self.position[0] = 0
-                elif horizontal>0 and self.rect.right>=g.screenSize[0] :
-                    self.position[0] = g.screenSize[0] - self.rect[2]
-                if vertical<0 and self.rect.top<=0 :
-                    self.position[1] = 0
-                elif vertical>0 and self.rect.bottom>=g.screenSize[1] :
-                    self.position[1] = g.screenSize[1] - self.rect[3]
-                #"""
-                self.rect[0] = self.position[0]
-                self.rect[1] = self.position[1]
+                objectsRectList.append(o.rect)
+            if self.itColided(objects,objectsRectList) :
+                print('colision')
+                self.rect = originalRect
+
+    def itColided(self,objects,objectsRectList) :
+        colisionIndexes = self.rect.collidelistall(objectsRectList)
+        if list(objects.keys()).index(self.name) in colisionIndexes :
+            return len(colisionIndexes)>1
+        return len(colisionIndexes)>0
+
+
+
 
 
 class Animation:
@@ -229,7 +222,7 @@ class Animation:
         self.timeDelay = timeDelay
         self.frames = frames
         for i in self.frames :
-            self.imagePath = 'Images/' + o.name + type + str(i) + '.png'
+            self.imagePath = g.imagePath + o.name + type + str(i) + '.png'
             self.img.append(pg.transform.smoothscale(getImage(self.imagePath),self.imgSize))
 
 
@@ -258,7 +251,7 @@ class Screen():
         '''
         It blits all objects on the screen'''
 
-        ###- g.screen.fill(g.color['backgroundColor'])
+        g.screen.fill(g.color['backgroundColor'])
         self.rectToBlit = pg.Rect(
             0,
             0,
@@ -270,6 +263,12 @@ class Screen():
             if self.rectToBlit.colliderect(o.rect) :
                 listToBlit.append((o.imgSurface,o.rect))
         g.screen.blits(listToBlit)
+
+    def draw(self,uxElements,g):
+        '''
+        It blits all UX Elements on the screen'''
+        pg.draw
+        g.screen.blits(uxElements)
 
 
 class TimeError:
@@ -434,3 +433,12 @@ class ArrowKey:
                 self.status[1] = 1
             elif not pg.key.get_pressed()[pg.K_UP] and not pg.key.get_pressed()[pg.K_DOWN] :
                 self.status[1] = 0
+
+#- Animations
+class UXSurface :
+    def __init__(self,size,position,g):
+        self.size = size
+        self.position = position
+        self.imgSurface = pg.Surface(tuple(size))
+        self.rect = pg.Rect(self.position[0],self.position[1],self.size[0],self.size[1])
+        self.imgSurface.fill(g.color['red'])
