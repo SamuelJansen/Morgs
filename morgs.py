@@ -38,83 +38,63 @@ for index in range(1) :
     )
 #"""
 """
-for index in range(1,10) :
-    objName = 'HellenFrost'
-    objects[objName + str(index)] = gl.Object(
-        objName,
-        objectSize,
-        200,
-        [g.screenSize[0]*np.random.random_sample(),g.screenSize[1]*np.random.random_sample()],
-        2,
-        g
-    )
-
-for index in range(10,110) :
-    objName = 'HellenFrost'
-    objects[objName + str(index)] = gl.Object(
-        objName,
-        objectSize,
-        50,
-        [g.screenSize[0]*np.random.random_sample(),g.screenSize[1]*np.random.random_sample()],
-        2,
-        g
-    )
-#"""
-"""
 upSound = gl.getSound('Sounds/Up.wav')
 downSound = gl.getSound('Sounds/Down.wav')
 leftSound = gl.getSound('Sounds/Left.wav')
 #"""
-objects['menu'] = gl.Object(
-    'menu',
+objects['thing'] = gl.Object(
+    'thing',
     [200,200],
     100,
     [200,200],
-    .5,
-    game
-)
-objects['menu2'] = gl.Object(
-    'menu2',
-    [200,200],
-    100,
-    [200,500],
-    .5,
-    game
-)
-objects['menu3'] = gl.Object(
-    'menu3',
-    [200,200],
-    10,
-    [700,700],
-    .5,
-    game
-)
-objects['menu4'] = gl.Object(
-    'menu4',
-    [200,200],
-    10,
-    [800,800],
-    .5,
-    game
-)
-objects['menu5'] = gl.Object(
-    'menu5',
-    [200,200],
-    10,
-    [500,900],
-    .5,
-    game
-)
-objects['menu6'] = gl.Object(
-    'menu6',
-    [200,200],
-    10,
-    [700,100],
     .5,
     game
 )
 uxElements = {}
 uxElements['menu'] = gl.UXSurface([200,200],[200,200],game)
+
+def exitGame(mouse,game) :
+    if mouse.position[0]==game.devScreenSize[0]-1 and mouse.position[1]==0 :
+        game.playing = False
+
+def itColided(objects,objectName) :
+    objectsRectList = [] ###- it needs to come from imput
+    for thisObjectName,o in objects.items() :
+        objectsRectList.append(o.rect)
+    colisionIndexes = objects[objectName].rect.collidelistall(objectsRectList)
+    if list(objects.keys()).index(objects[objectName].name) in colisionIndexes :
+        return len(colisionIndexes)>1
+    return len(colisionIndexes)>0
+
+def dealWithColision(objects,objectName) :
+    objectName += str(len(objects)-1)
+    if itColided(objects,objectName) :
+        print(objectName)
+        del objects[objectName]
+
+def newObject():
+    if len(objects)<amountOfThings :
+        if len(objects)<amountOfThings*percentualBigThings/100 :
+            objectProportion = objectBigProportion
+        else :
+            objectProportion = objectSmallProportion
+
+        objects[objectName + str(len(objects))] = gl.Object(
+            objectName + str(len(objects)),
+            objectSize,
+            objectProportion,
+            [game.screenSize[0]*np.random.random_sample(),game.screenSize[1]*np.random.random_sample()],
+            objectVelocity,
+            game
+        )
+
+amountOfThings = 16
+percentualBigThings = 90
+objectName = 'thing'
+objectSize = [200,200]
+objectBigProportion = 300
+objectSmallProportion = 10
+objectVelocity = .5
 
 endGame = False
 arrow = gl.ArrowKey()
@@ -122,11 +102,6 @@ mouse = gl.Mouse(game)
 frame = gl.Frame(now.time(),game)
 screen = gl.Screen(objects,game)
 move = [np.random.randint(3)-1,np.random.randint(3)-1]
-
-def exitGame(mouse,game) :
-    if mouse.position[0]==game.devScreenSize[0]-1 and mouse.position[1]==0 :
-        game.playing = False
-
 while game.playing :
 
     if frame.apfNew :
@@ -147,30 +122,19 @@ while game.playing :
                 gl.playSound(leftSound)
             #"""
         exitGame(mouse,game)
-        move = arrow.status
-
-        """
-        if len(objects)>1 :
-            objects['background'].updatePosition(move,objects,g)
-        if len(objects)>2 :
-            for i in range(1,len(objects)-1) :
-                move = [np.random.randint(3)-1,np.random.randint(3)-1]
-                objects['HellenFrost' + str(i)].updatePosition(move,objects,g)
-        #"""
         #'''
-        move = [np.random.randint(3)-1,np.random.randint(3)-1]
-        objects['menu3'].updatePosition(move,objects,g)
-        move = [np.random.randint(3)-1,np.random.randint(3)-1]
-        objects['menu4'].updatePosition(move,objects,g)
-        move = [np.random.randint(3)-1,np.random.randint(3)-1]
-        objects['menu5'].updatePosition(move,objects,g)
-        move = [np.random.randint(3)-1,np.random.randint(3)-1]
-        objects['menu6'].updatePosition(move,objects,g)
+        newObject()
+
+        dealWithColision(objects,objectName)
+
+        for i in range(1,len(objects)) :
+            move = [np.random.randint(3)-1,np.random.randint(3)-1]
+            objects['thing'+str(i)].updatePosition(move,objects,game)
 
     frame.update(now.time(),screen,game)
     if frame.new :
         # objects['menu'].rect.move_ip(0,1)
-        objects['menu'].updatePosition([0,1],objects,game)
+        objects['thing'].updatePosition([0,1],objects,game)
         screen.blit(objects,frame,game)
         # screen.draw(uxElements,frame,game)
 

@@ -198,7 +198,7 @@ class Object:
             for objectName,o in objects.items() :
                 objectsRectList.append(o.rect)
             if self.itColided(objects,objectsRectList) :
-                print('colision')
+                ###- print('colision')
                 self.rect = originalRect
 
     def itColided(self,objects,objectsRectList) :
@@ -206,9 +206,6 @@ class Object:
         if list(objects.keys()).index(self.name) in colisionIndexes :
             return len(colisionIndexes)>1
         return len(colisionIndexes)>0
-
-
-
 
 
 class Animation:
@@ -299,8 +296,9 @@ class TimeError:
             f.timeError         = {f.timeError}
             f.timeOveralError   = {f.timeOveralError}
             f.apfTimeError      = {f.apfTimeError}
-            f.apsCounter = {f.apsCounter}
-            innerLoops = {self.innerLoops}''')
+            f.fpsCounter    = {f.fpsCounter}
+            f.apsCounter    = {f.apsCounter}
+            innerLoops      = {self.innerLoops}''')
             #"""
             self.innerLoops = 0
 
@@ -318,6 +316,7 @@ class Frame:
         self.width = 1 / g.fps
         self.timeNext = timeNow + self.width
         #- Frame stuffs
+        self.fpsCounter = 0
         self.apsCounter = 0
         #- Actions per frame. It was much simpler to implement
         self.apf = g.aps/g.fps
@@ -355,6 +354,7 @@ class Frame:
                 self.counter = 0
             error = self.timeOveralError * self.width + self.timeError
             self.timeNext = timeNow + self.width - error
+            self.fpsCounter += 1
         #- Dealling with apf's time erros
         if timeNow>self.apfTimeNext :
             self.apfNew = True
@@ -372,6 +372,7 @@ class Frame:
         #- Dealling with time erros
         self.correction.checkTimeError(timeNow,self)
         if self.newSecond :
+            self.fpsCounter = 0
             self.apsCounter = 0
 
 
