@@ -1,9 +1,11 @@
-import GameLibrary as gl
+#import GameLibrary as gl
 import sys
 import os
 import pygame as pg
 import time as now
 import numpy as np
+from model import Game, Object, ArrowKey, Screen, Mouse, Frame
+from function import image
 
 ###############################################################################
 #- Initializing global paths, sizes, etc
@@ -17,7 +19,8 @@ colors =    {
             }
 fps = 60
 aps = 30
-game = gl.Game(name,fps,aps,colors)
+#game = gl.Game(name,fps,aps,colors)
+game = Game.Game(name,fps,aps,colors)
 #g1 = gl.Game(name,path,fps,aps,colors,screenSize,osPosition=(screenSize[0]+1,0))
 
 objectSize = [100,70]
@@ -42,7 +45,8 @@ upSound = gl.getSound('Sounds/Up.wav')
 downSound = gl.getSound('Sounds/Down.wav')
 leftSound = gl.getSound('Sounds/Left.wav')
 #"""
-objects['thing'] = gl.Object(
+# objects['thing'] = gl.Object(
+objects['thing'] = Object.Object(
     'thing',
     [200,200],
     100,
@@ -50,8 +54,6 @@ objects['thing'] = gl.Object(
     .5,
     game
 )
-uxElements = {}
-uxElements['menu'] = gl.UXSurface([200,200],[200,200],game)
 
 def exitGame(mouse,game) :
     if mouse.position[0]==game.devScreenSize[0]-1 and mouse.position[1]==0 :
@@ -79,7 +81,7 @@ def newObject():
         else :
             objectProportion = objectSmallProportion
 
-        objects[objectName + str(len(objects))] = gl.Object(
+        objects[objectName + str(len(objects))] = Object.Object(
             objectName + str(len(objects)),
             objectSize,
             objectProportion,
@@ -96,11 +98,10 @@ objectBigProportion = 300
 objectSmallProportion = 10
 objectVelocity = .5
 
-endGame = False
-arrow = gl.ArrowKey()
-mouse = gl.Mouse(game)
-frame = gl.Frame(now.time(),game)
-screen = gl.Screen(objects,game)
+arrow = ArrowKey.ArrowKey()
+mouse = Mouse.Mouse(game)
+frame = Frame.Frame(now.time(),game)
+screen = Screen.Screen(objects,game)
 move = [np.random.randint(3)-1,np.random.randint(3)-1]
 while game.playing :
 
@@ -139,5 +140,5 @@ while game.playing :
         # screen.draw(uxElements,frame,game)
 
 pg.quit()
-print(gl.imageLibrary)
+print(image.imageLibrary)
 #sys.exit()
