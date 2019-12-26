@@ -13,6 +13,6 @@ def getImage(path) :
     image = imageLibrary.get(path)
     if image==None :
         canonicalizedPath = path.replace('/',os.sep).replace('\\',os.sep)
-        image = pg.image.load(canonicalizedPath)#.convert_alpha()
+        image = pg.image.load(canonicalizedPath)#.convert_alpha().set_alpha(10)
     imageLibrary[path] = image
     return image

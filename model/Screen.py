@@ -2,44 +2,53 @@ import pygame as pg
 
 class Screen():
     '''
-    It blits all objects on the screen'''
-    def __init__(self,objects,g):
+    It blits all objects on the screenMode'''
+    def __init__(self,game):
         '''
-        It blits all objects on the screen'''
-        ###- g.screen.fill(g.color['backgroundColor'])
+        It blits all objects on the screenMode'''
+        game.screenMode.fill(game.color['backgroundColor'])
         self.rectToBlit = pg.Rect(
             0,
             0,
-            g.screenSize[0],
-            g.screenSize[1]
+            game.screenSize[0],
+            game.screenSize[1]
         )
-        listToBlit = []
-        for objectName,o in objects.items() :
-            print(o)
-            if self.rectToBlit.colliderect(o.rect) :
-                ###g.screen.blit(o.img,o.rect)
-                listToBlit.append((o.imgSurface,o.rect))
-        g.screen.blits(listToBlit)
+        self.listToBlit = [
+            (object.imgSurface,object.rect)
+            for object in game.objects.values()
+            if self.rectToBlit.colliderect(object.rect)
+        ]
+        game.screenMode.blits(self.listToBlit)
 
-    def blit(self,objects,f,g):
-        '''
-        It blits all objects on the screen'''
-
-        g.screen.fill(g.color['backgroundColor'])
+    def updateRectToBlit(self,game):
         self.rectToBlit = pg.Rect(
             0,
             0,
-            g.screenSize[0],
-            g.screenSize[1]
+            game.screenSize[0],
+            game.screenSize[1]
         )
-        listToBlit = []
-        for objectName,o in objects.items() :
-            if self.rectToBlit.colliderect(o.rect) :
-                listToBlit.append((o.imgSurface,o.rect))
-        g.screen.blits(listToBlit)
 
-    def draw(self,uxElements,g):
+    def updateListToBlit(self,game):
+        self.listToBlit = [
+            (object.imgSurface,object.rect)
+            for object in game.objects.values()
+            if self.rectToBlit.colliderect(object.rect)
+        ]
+
+    def blit(self,game):
         '''
-        It blits all UX Elements on the screen'''
+        It blits all objects on the screenMode'''
+        game.screenMode.fill(game.color['backgroundColor'])
+        # self.updateRectToBlit(game) ###- precaution
+        self.updateListToBlit(game)
+        game.screenMode.blits(self.listToBlit)
+
+    def update(self,game):
+        self.blit(game)
+        pg.display.update(self.rectToBlit)
+
+    def draw(self,uxElements,game):
+        '''
+        It blits all UX Elements on the screenMode'''
         pg.draw
-        g.screen.blits(uxElements)
+        game.screenMode.blits(uxElements)

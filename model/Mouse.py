@@ -1,11 +1,11 @@
 import pygame as pg
 
 class Mouse():
-    def __init__(self,g):
+    def __init__(self,game):
         '''
         Mouse.position is pondered by dev screen size'''
         self.position = [0,0]
-        self.devResize = g.devResize
+        self.devResize = game.devResize
 
     def getPosition(self):
         self.position = list(pg.mouse.get_pos())

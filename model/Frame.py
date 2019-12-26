@@ -4,20 +4,20 @@ from model import TimeErrorControl
 class Frame:
     '''
     It's a class to control time'''
-    def __init__(self,timeNow,g):
+    def __init__(self,timeNow,game):
         '''
-        Frame(timeNow,g)'''
+        Frame(timeNow,game)'''
         self.newSecond = True
         #- Frame stuffs
         self.counter = 0
         self.new = True
-        self.width = 1 / g.fps
+        self.width = 1 / game.fps
         self.timeNext = timeNow + self.width
         #- Frame stuffs
         self.fpsCounter = 0
         self.apsCounter = 0
         #- Actions per frame. It was much simpler to implement
-        self.apf = g.aps/g.fps
+        self.apf = game.aps/game.fps
         self.apfWidth = self.width / self.apf
         self.apfCounter = 0
         self.apfNew = True
@@ -30,22 +30,19 @@ class Frame:
         #- External time corrector
         self.correction = TimeErrorControl.TimeErrorControl(timeNow)
 
-    def update(self,timeNow,b,g):
+    def update(self,timeNow,game):
         '''
         It aims to mantain the fps and aps constant
-        Frame.update(timeNow,g)'''
+        Frame.update(timeNow,game)'''
         #- dealling with frame control
         self.new = False
         self.newSecond = False
         if timeNow>self.timeNext :
-            pg.display.update(
-                b.rectToBlit
-            )
             self.new = True
             self.timeError += self.correctionFactor * ( timeNow - self.timeNext - self.timeError )
             if self.timeError<0 :
                 self.timeError = 0
-            if self.counter<g.fps-1 :
+            if self.counter<game.fps-1 :
                 self.counter += 1
             else :
                 self.newSecond = True
@@ -68,7 +65,7 @@ class Frame:
         else :
             self.apfNew = False
         #- Dealling with time erros
-        self.correction.checkTimeError(timeNow,self)
+        self.correction.checkTimeError(timeNow,self,mustPrint=True)
         if self.newSecond :
             self.fpsCounter = 0
             self.apsCounter = 0
