@@ -47,8 +47,8 @@ class Screen():
         self.blit(game)
         pg.display.update(self.rectToBlit)
 
-    def draw(self,uxElements,game):
-        '''
-        It blits all UX Elements on the screenMode'''
-        pg.draw
-        game.screenMode.blits(uxElements)
+    # def draw(self,uxElements,game):
+    #     '''
+    #     It blits all UX Elements on the screenMode'''
+    #     pg.draw
+    #     game.screenMode.blits(uxElements)

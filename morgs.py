@@ -4,7 +4,7 @@ import os
 import pygame as pg
 import time as now
 import numpy as np
-from model import Game, Object, ArrowKey, Screen, Mouse, Frame
+from model import Game, Object, Cenario, ArrowKey, Screen, Mouse, Frame
 from model.performance_measurement import PerformanceMeasurement as pm
 from function import image
 
@@ -26,15 +26,13 @@ performanceMeasurement = pm.PerformanceMeasurement(
     game,
     ammountOfThings = 100,
     percentualBigThings = 90,
-    objectSize = [2000,200],
-    objectSpaceCostSize = [2000,100],
-    objectBigProportion = 30,
+    objectSize = [200,200],
+    objectSpaceCostSize = [200,100],
+    objectBigProportion = 50,
     objectSmallProportion = 10,
     objectVelocity = .5,
     mustPopulate = True
 )
-
-cenario = {}
 
 arrow = ArrowKey.ArrowKey()
 mouse = Mouse.Mouse(game)

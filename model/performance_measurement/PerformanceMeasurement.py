@@ -1,5 +1,5 @@
 import numpy as np
-from model import Game, Object
+from model import Game, Object, Cenario
 
 class PerformanceMeasurement():
     def __init__(self,game,ammountOfThings,percentualBigThings,
@@ -16,12 +16,23 @@ class PerformanceMeasurement():
         self.objectSmallProportion = objectSmallProportion
         self.objectVelocity = objectVelocity
 
+        bigObjectSpaceCostSize = [200,100]
+        bigObjectSpaceCostSize = None
+        # if self.mustPopulate :
+        #     game.objects['thing'] = Object.Object(
+        #         'thing',
+        #         Object.ObjectTypes.STANDARD_OBJECT,
+        #         [200,200],
+        #         [200,200],
+        #         100,
+        #         .5,
+        #         game,
+        #         spaceCostSize=bigObjectSpaceCostSize
+        #     )
         if self.mustPopulate :
-            game.objects['thing'] = Object.Object(
+            game.objects['thing'] = Cenario.Cenario(
                 'thing',
                 [200,200],
-                [200,100],
-                100,
                 [200,200],
                 .5,
                 game
@@ -32,13 +43,16 @@ class PerformanceMeasurement():
             game.playing = False
 
     def itColided(self,objectName,game) :
-        objectsRectList = [] ###- it needs to come from imput
-        for o in game.objects.values() :
-            objectsRectList.append(o.spaceCostRect)
-        colisionIndexes = game.objects[objectName].spaceCostRect.collidelistall(objectsRectList)
-        if list(game.objects.keys()).index(game.objects[objectName].name) in colisionIndexes :
-            return len(colisionIndexes)>1
-        return len(colisionIndexes)>0
+        if game.objects[objectName].collides :
+            objectsRectList = [] ###- it needs to come from imput
+            for o in game.objects.values() :
+                if o.spaceCostSize :
+                    objectsRectList.append(o.spaceCostRect)
+            colisionIndexes = game.objects[objectName].spaceCostRect.collidelistall(objectsRectList)
+            if list(game.objects.keys()).index(game.objects[objectName].name) in colisionIndexes :
+                return len(colisionIndexes)>1
+            return len(colisionIndexes)>0
+        return False
 
     def dealWithColision(self,game) :
         objectName = self.objectName + str(len(game.objects)-1)
@@ -55,12 +69,12 @@ class PerformanceMeasurement():
 
             game.objects[self.objectName + str(len(game.objects))] = Object.Object(
                 self.objectName + str(len(game.objects)),
-                self.objectSize,
-                self.objectSpaceCostSize,
-                objectProportion,
                 [game.screenSize[0]*np.random.random_sample(),game.screenSize[1]*np.random.random_sample()],
+                self.objectSize,
+                objectProportion,
                 self.objectVelocity,
-                game
+                game,
+                spaceCostSize = self.objectSpaceCostSize
             )
 
     def moveObjectsRandomically(self,game):

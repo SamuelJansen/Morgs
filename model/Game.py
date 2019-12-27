@@ -35,7 +35,7 @@ class Game:
         pg.display.set_caption(self.name)
 
         if self.settings['screenSize']==[0,0] :
-            self.screenMode = pg.display.set_mode((0,0),pg.FULLSCREEN|pg.HWSURFACE|pg.DOUBLEBUF,32).convert_alpha()
+            self.screenMode = pg.display.set_mode((0,0),pg.FULLSCREEN|pg.HWSURFACE|pg.DOUBLEBUF,32)#.convert_alpha()
             screenSizeX, screenSizeY = self.screenMode.get_size()
             self.screenSize = [screenSizeX, screenSizeY]
             self.size = self.screenSize
@@ -69,8 +69,9 @@ class Game:
 
     def updateSpaceCostRectList(self):
         ###- https://www.pygame.org/docs/ref/rect.html
-        self.objects = {object.name:object for object in (sorted(self.objects.values(), key=attrgetter('spaceCostRect.top')))}
-        self.spaceCostObjectsPositionRectList = [object.spaceCostRect for object in self.objects.values() if object.spaceCostRect]
+        ###- self.objects = {object.name:object for object in (sorted(self.objects.values(), key=attrgetter('spaceCostRect.top')))}
+        self.objects = {object.name:object for object in (sorted(self.objects.values(), key=self.renderOrder))}
+        self.spaceCostObjectsPositionRectList = [object.spaceCostRect for object in self.objects.values()]
 
     def updateScreen(self):
         '''
@@ -85,3 +86,7 @@ class Game:
 
     def update(self,timeNow):
         self.updateFrame(timeNow)
+
+    def renderOrder(self,object):
+        return object.type,object.spaceCostRect.bottom
+        # return object.spaceCostRect.bottom
