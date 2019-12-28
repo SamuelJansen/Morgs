@@ -2,14 +2,15 @@ import numpy as np
 from model import Game, Object, Cenario
 
 class PerformanceMeasurement():
-    def __init__(self,game,ammountOfThings,percentualBigThings,
+    def __init__(self,game,amountOfThings,percentualBigThings,
             objectSize,objectSpaceCostSize,objectBigProportion,
             objectSmallProportion,objectVelocity,mustPopulate=False
         ):
         self.mustPopulate = mustPopulate
-        self.amountOfThings = ammountOfThings
+        self.populated = False
+        self.amountOfThings = amountOfThings
         self.percentualBigThings = percentualBigThings
-        self.objectName = 'thing'
+        self.objectName = 'performance_measurement_object'
         self.objectSize = objectSize
         self.objectSpaceCostSize = objectSpaceCostSize
         self.objectBigProportion = objectBigProportion
@@ -18,25 +19,20 @@ class PerformanceMeasurement():
 
         bigObjectSpaceCostSize = [200,100]
         bigObjectSpaceCostSize = None
-        # if self.mustPopulate :
-        #     game.objects['thing'] = Object.Object(
-        #         'thing',
-        #         Object.ObjectTypes.STANDARD_OBJECT,
-        #         [200,200],
-        #         [200,200],
-        #         100,
-        #         .5,
-        #         game,
-        #         spaceCostSize=bigObjectSpaceCostSize
-        #     )
         if self.mustPopulate :
-            game.objects['thing'] = Cenario.Cenario(
-                'thing',
+            # game.objects[self.objectName] = Object.Object(
+            Object.Object(
+                self.objectName,
                 [200,200],
                 [200,200],
+                100,
                 .5,
-                game
+                game,
+                spaceCostSize=bigObjectSpaceCostSize
             )
+
+            while not self.populated :
+                self.populateTheScreen(game)
 
     def exitGame(self,mouse,game) :
         if mouse.position[0]==game.devScreenSize[0]-1 and mouse.position[1]==0 :
@@ -57,8 +53,9 @@ class PerformanceMeasurement():
     def dealWithColision(self,game) :
         objectName = self.objectName + str(len(game.objects)-1)
         if self.itColided(objectName,game) :
-            # print(self.objectName)
+            # print(f'{game.objects[self.objectName + str(len(game.objects)-1)].name} or {objectName} objected deleted from the game')
             del game.objects[objectName]
+            self.populated = False
 
     def newObject(self,game):
         if len(game.objects)<self.amountOfThings :
@@ -67,7 +64,8 @@ class PerformanceMeasurement():
             else :
                 objectProportion = self.objectSmallProportion
 
-            game.objects[self.objectName + str(len(game.objects))] = Object.Object(
+            # game.objects[self.objectName + str(len(game.objects))] = Object.Object(
+            Object.Object(
                 self.objectName + str(len(game.objects)),
                 [game.screenSize[0]*np.random.random_sample(),game.screenSize[1]*np.random.random_sample()],
                 self.objectSize,
@@ -76,13 +74,17 @@ class PerformanceMeasurement():
                 game,
                 spaceCostSize = self.objectSpaceCostSize
             )
+            # print(f'{game.objects[self.objectName + str(len(game.objects)-1)].name} object added to the game')
+        else :
+            self.populated = True
+            print('PerformanceMeasurement is populated')
 
     def moveObjectsRandomically(self,game):
         if self.mustPopulate :
-            game.objects['thing'].updatePosition([0,1],game)
-            for i in range(1,len(game.objects)) :
+            game.objects[self.objectName].updatePosition([0,1],game)
+            for i in range(1,self.amountOfThings) :
                 move = [np.random.randint(3)-1,np.random.randint(3)-1]
-                game.objects['thing'+str(i)].updatePosition(move,game)
+                game.objects[self.objectName+str(i)].updatePosition(move,game)
 
     def populateTheScreen(self,game):
         if self.mustPopulate :

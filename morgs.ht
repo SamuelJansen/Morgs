@@ -1,6 +1,6 @@
 
-#screenSize 0x0
+screenSize 0x0
 #screenSize 620x380
 #screenSize 310x190
 #screenSize 960x1080
-screenSize 1920x1080
+#screenSize 1920x1080

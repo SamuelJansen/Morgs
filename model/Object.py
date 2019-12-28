@@ -5,7 +5,7 @@ from model import Game
 
 class ObjectTypes:
     CENARIO = '0 CENARIO'
-    STANDARD_OBJECT = '1 STANDARD_OBJECT'
+    STANDARD_OBJECT = '10 STANDARD_OBJECT'
 
 class Object:
     '''
@@ -47,6 +47,8 @@ class Object:
         )
 
         self.velocity = velocity * game.velocityControl
+
+        self.addNewObjectToGame(game)
         ###- print(f'{self.name} created successful')
 
     def updatePosition(self,move,game):
@@ -67,10 +69,16 @@ class Object:
     def itColided(self,game):
         if self.collides :
             colisionIndexes = self.spaceCostRect.collidelistall(game.spaceCostObjectsPositionRectList)
-            if list(game.objects.keys()).index(self.name) in colisionIndexes :
-                return len(colisionIndexes)>1
-            return len(colisionIndexes)>0
+            try :
+                if list(game.collidableObjects.keys()).index(self.name) in colisionIndexes :
+                    return len(colisionIndexes)>1
+                # return len(colisionIndexes)>0
+            except :
+                pass
         return False
 
     def getPosition(self):
         return [self.spaceCostRect[0],self.rect[1]] ###- upper left corner
+
+    def addNewObjectToGame(self,game):
+        game.objects[self.name] = self

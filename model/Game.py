@@ -59,6 +59,7 @@ class Game:
         print(f'screenSize = {self.screenSize}, devScreenSize = {self.devScreenSize}, devResize = {self.devResize}')
 
         self.objects = {}
+        self.collidableObjects = {}
         self.spaceCostObjectsPositionRectList = []
 
         self.screen = Screen.Screen(self)
@@ -71,7 +72,8 @@ class Game:
         ###- https://www.pygame.org/docs/ref/rect.html
         ###- self.objects = {object.name:object for object in (sorted(self.objects.values(), key=attrgetter('spaceCostRect.top')))}
         self.objects = {object.name:object for object in (sorted(self.objects.values(), key=self.renderOrder))}
-        self.spaceCostObjectsPositionRectList = [object.spaceCostRect for object in self.objects.values()]
+        self.collidableObjects = {object.name:object for object in self.objects.values() if object.collides}
+        self.spaceCostObjectsPositionRectList = [object.spaceCostRect for object in self.collidableObjects.values()]
 
     def updateScreen(self):
         '''

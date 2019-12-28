@@ -24,7 +24,7 @@ game = Game.Game(name,fps,aps,now.time(),colors)
 
 performanceMeasurement = pm.PerformanceMeasurement(
     game,
-    ammountOfThings = 100,
+    amountOfThings = 200,
     percentualBigThings = 90,
     objectSize = [200,200],
     objectSpaceCostSize = [200,100],
@@ -32,6 +32,16 @@ performanceMeasurement = pm.PerformanceMeasurement(
     objectSmallProportion = 10,
     objectVelocity = .5,
     mustPopulate = True
+)
+
+cenarioName = 'cenario'
+cenarioPosition = [0,0]
+Cenario.Cenario(
+    cenarioName,
+    cenarioPosition,
+    [200,200],
+    .5,
+    game
 )
 
 arrow = ArrowKey.ArrowKey()
@@ -56,7 +66,6 @@ while game.playing :
                 gl.playSound(leftSound)
             #"""
         performanceMeasurement.exitGame(mouse,game)
-        performanceMeasurement.populateTheScreen(game)
 
         game.updateSpaceCostRectList()
 
