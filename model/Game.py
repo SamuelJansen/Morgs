@@ -8,7 +8,7 @@ from operator import attrgetter
 class Game:
     '''
     It defines the game characteristics'''
-    def __init__(self,name,fps,aps,timeNow,colors,osPosition=(0,0),scaleRange=1000):
+    def __init__(self,name,fps,aps,timeNow,colors,position=(0,0),scaleRange=1000):
         '''
         Game(name,screenSize,colors,fps,apf)
         name    --> It's the game's name
@@ -27,7 +27,7 @@ class Game:
 
         self.settings = setting.getSettings(self.name)
 
-        os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % osPosition
+        os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % position
         SetWindowPos = ctypes.windll.user32.SetWindowPos
         pg.mixer.pre_init(44100,16,32,0)
         pg.init()
@@ -35,10 +35,11 @@ class Game:
         pg.display.set_caption(self.name)
 
         if self.settings['screenSize']==[0,0] :
-            self.screenMode = pg.display.set_mode((0,0),pg.FULLSCREEN|pg.HWSURFACE|pg.DOUBLEBUF,32)#.convert_alpha()
+            self.screenMode = pg.display.set_mode([0,0],pg.FULLSCREEN)
             screenSizeX, screenSizeY = self.screenMode.get_size()
             self.screenSize = [screenSizeX, screenSizeY]
             self.size = self.screenSize
+            self.screenMode = pg.display.set_mode(self.screenSize,pg.NOFRAME|pg.HWSURFACE|pg.DOUBLEBUF)
         else :
             self.screenSize = self.settings['screenSize']
             self.size = self.screenSize
@@ -57,6 +58,9 @@ class Game:
         self.devScreenSize = (1000,564)
         self.devResize = [self.devScreenSize[0]/self.screenSize[0],self.devScreenSize[1]/self.screenSize[1]]
         print(f'screenSize = {self.screenSize}, devScreenSize = {self.devScreenSize}, devResize = {self.devResize}')
+
+        self.longitudesImageOnScreen = 4
+        self.latitudesImageOnScreen = 3
 
         self.objects = {}
         self.collidableObjects = {}
@@ -92,3 +96,6 @@ class Game:
     def renderOrder(self,object):
         return object.type,object.spaceCostRect.bottom
         # return object.spaceCostRect.bottom
+
+    def addNewObject(self,object):
+        self.objects[object.name] = object

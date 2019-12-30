@@ -12,6 +12,7 @@ from function import image
 #- Initializing global paths, sizes, etc
 ###############################################################################
 name = 'morgs'
+gameSection = 'two_mountains/'
 colors =    {
             'black' : (0,0,0),
             'white' : (255,255,255),
@@ -24,6 +25,7 @@ game = Game.Game(name,fps,aps,now.time(),colors)
 
 performanceMeasurement = pm.PerformanceMeasurement(
     game,
+    gameSection,
     amountOfThings = 200,
     percentualBigThings = 90,
     objectSize = [200,200],
@@ -34,15 +36,31 @@ performanceMeasurement = pm.PerformanceMeasurement(
     mustPopulate = True
 )
 
+# cenarioName = 'cenario'
+# cenarioPosition = [0,0]
+# Cenario.CenarioFirst(
+#     cenarioName,
+#     gameSection,
+#     cenarioPosition,
+#     [200,200],
+#     .5,
+#     game
+# )
 cenarioName = 'cenario'
-cenarioPosition = [0,0]
+cenarioLongitudes = 5
+cenarioLatitudes = 8
+cenarioInitialCoordinate = [0,0]
+cenarioVelocity = .5
 Cenario.Cenario(
     cenarioName,
-    cenarioPosition,
-    [200,200],
-    .5,
+    gameSection,
+    cenarioLongitudes,
+    cenarioLatitudes,
+    cenarioInitialCoordinate,
+    cenarioVelocity,
     game
 )
+
 
 arrow = ArrowKey.ArrowKey()
 mouse = Mouse.Mouse(game)

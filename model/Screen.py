@@ -14,7 +14,7 @@ class Screen():
             game.screenSize[1]
         )
         self.listToBlit = [
-            (object.imgSurface,object.rect)
+            (object.imageSurface,object.rect)
             for object in game.objects.values()
             if self.rectToBlit.colliderect(object.rect)
         ]
@@ -30,7 +30,7 @@ class Screen():
 
     def updateListToBlit(self,game):
         self.listToBlit = [
-            (object.imgSurface,object.rect)
+            (object.imageSurface,object.rect)
             for object in game.objects.values()
             if self.rectToBlit.colliderect(object.rect)
         ]

@@ -2,7 +2,7 @@ import numpy as np
 from model import Game, Object, Cenario
 
 class PerformanceMeasurement():
-    def __init__(self,game,amountOfThings,percentualBigThings,
+    def __init__(self,game,folder,amountOfThings,percentualBigThings,
             objectSize,objectSpaceCostSize,objectBigProportion,
             objectSmallProportion,objectVelocity,mustPopulate=False
         ):
@@ -23,6 +23,7 @@ class PerformanceMeasurement():
             # game.objects[self.objectName] = Object.Object(
             Object.Object(
                 self.objectName,
+                folder,
                 [200,200],
                 [200,200],
                 100,
@@ -32,7 +33,7 @@ class PerformanceMeasurement():
             )
 
             while not self.populated :
-                self.populateTheScreen(game)
+                self.populateTheScreen(folder,game)
 
     def exitGame(self,mouse,game) :
         if mouse.position[0]==game.devScreenSize[0]-1 and mouse.position[1]==0 :
@@ -57,7 +58,7 @@ class PerformanceMeasurement():
             del game.objects[objectName]
             self.populated = False
 
-    def newObject(self,game):
+    def newObject(self,folder,game):
         if len(game.objects)<self.amountOfThings :
             if len(game.objects)<self.amountOfThings*self.percentualBigThings/100 :
                 objectProportion = self.objectBigProportion
@@ -67,6 +68,7 @@ class PerformanceMeasurement():
             # game.objects[self.objectName + str(len(game.objects))] = Object.Object(
             Object.Object(
                 self.objectName + str(len(game.objects)),
+                folder,
                 [game.screenSize[0]*np.random.random_sample(),game.screenSize[1]*np.random.random_sample()],
                 self.objectSize,
                 objectProportion,
@@ -86,7 +88,7 @@ class PerformanceMeasurement():
                 move = [np.random.randint(3)-1,np.random.randint(3)-1]
                 game.objects[self.objectName+str(i)].updatePosition(move,game)
 
-    def populateTheScreen(self,game):
+    def populateTheScreen(self,folder,game):
         if self.mustPopulate :
-            self.newObject(game)
+            self.newObject(folder,game)
             self.dealWithColision(game)

@@ -1,19 +1,23 @@
 import pygame as pg
 import numpy as np
-from function import image
 from model import Game
+from function import image
 
 class ObjectTypes:
-    CENARIO = '0 CENARIO'
-    STANDARD_OBJECT = '10 STANDARD_OBJECT'
+    CENARIO = '00 cenario'
+    STANDARD_OBJECT = '10 standard_object'
+
+    def getType(type):
+        return type[3:]
 
 class Object:
     '''
     It's a object'''
-    def __init__(self,name,position,size,scale,velocity,game,type=ObjectTypes.STANDARD_OBJECT,spaceCostSize=None):
+    def __init__(self,name,folder,position,size,scale,velocity,game,type=ObjectTypes.STANDARD_OBJECT,spaceCostSize=None):
         '''
         Object()'''
         self.name = name
+        self.folder = folder + ObjectTypes.getType(type) + '/'
         self.type = type
         self.size = size.copy()
         self.scale = scale
@@ -21,13 +25,10 @@ class Object:
         self.size[0] = int(np.ceil(self.size[0] * self.scaleFactor))
         self.size[1] = int(np.ceil(self.size[1] * self.scaleFactor))
 
-        self.imagePath = game.imagePath + self.name + '.png'
-        try :
-            self.image = pg.transform.smoothscale(getImage(self.imagePath),self.size)
-        except :
-            self.image = pg.transform.smoothscale(image.getImage(game.imagePath+'standardImage.png'),self.size)
-        self.imgSurface = pg.Surface(self.size,pg.HWSURFACE|pg.SRCALPHA)#.convert_alpha().set_alpha(10)
-        self.imgSurface.blit(self.image, (0,0))
+        self.imagePath = game.imagePath + self.folder + self.name + '.png'
+        self.image = pg.transform.smoothscale(image.getImage(self.imagePath,game),self.size)
+        self.imageSurface = pg.Surface(self.size,pg.HWSURFACE|pg.SRCALPHA)#.convert_alpha().set_alpha(10)
+        self.imageSurface.blit(self.image, (0,0))
 
         self.rect = pg.Rect(position[0],position[1],self.size[0],self.size[1])
 
@@ -48,8 +49,8 @@ class Object:
 
         self.velocity = velocity * game.velocityControl
 
-        self.addNewObjectToGame(game)
-        ###- print(f'{self.name} created successful')
+        game.addNewObject(self)
+        ###- print(f'{self.name} created successfully')
 
     def updatePosition(self,move,game):
         '''
@@ -69,16 +70,16 @@ class Object:
     def itColided(self,game):
         if self.collides :
             colisionIndexes = self.spaceCostRect.collidelistall(game.spaceCostObjectsPositionRectList)
-            try :
-                if list(game.collidableObjects.keys()).index(self.name) in colisionIndexes :
-                    return len(colisionIndexes)>1
-                # return len(colisionIndexes)>0
-            except :
-                pass
+            # try :
+            #     if list(game.collidableObjects.keys()).index(self.name) in colisionIndexes :
+            #         return len(colisionIndexes)>1
+            #     # return len(colisionIndexes)>0
+            # except :
+            #     pass
+            if list(game.collidableObjects.keys()).index(self.name) in colisionIndexes :
+                return len(colisionIndexes)>1
+            # return len(colisionIndexes)>0
         return False
 
     def getPosition(self):
         return [self.spaceCostRect[0],self.rect[1]] ###- upper left corner
-
-    def addNewObjectToGame(self,game):
-        game.objects[self.name] = self
