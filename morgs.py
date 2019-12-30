@@ -6,7 +6,6 @@ import time as now
 import numpy as np
 from model import Game, Object, Cenario, ArrowKey, Screen, Mouse, Frame
 from model.performance_measurement import PerformanceMeasurement as pm
-from function import image
 
 ###############################################################################
 #- Initializing global paths, sizes, etc
@@ -19,7 +18,7 @@ colors =    {
             'backgroundColor' : (237,201,202),
             'red' : (255,0,0)
             }
-fps = 60
+fps = 30
 aps = 30
 game = Game.Game(name,fps,aps,now.time(),colors)
 
@@ -36,30 +35,30 @@ performanceMeasurement = pm.PerformanceMeasurement(
     mustPopulate = True
 )
 
-# cenarioName = 'cenario'
-# cenarioPosition = [0,0]
-# Cenario.CenarioFirst(
-#     cenarioName,
-#     gameSection,
-#     cenarioPosition,
-#     [200,200],
-#     .5,
-#     game
-# )
 cenarioName = 'cenario'
-cenarioLongitudes = 5
-cenarioLatitudes = 8
-cenarioInitialCoordinate = [0,0]
-cenarioVelocity = .5
-Cenario.Cenario(
+cenarioPosition = [0,0]
+Cenario.BasicCenarioClass(
     cenarioName,
     gameSection,
-    cenarioLongitudes,
-    cenarioLatitudes,
-    cenarioInitialCoordinate,
-    cenarioVelocity,
+    cenarioPosition,
+    [200,200],
+    .5,
     game
 )
+# cenarioName = 'cenario'
+# cenarioLongitudes = 4
+# cenarioLatitudes = 3
+# cenarioInitialCoordinate = [0,0]
+# cenarioVelocity = .5
+# Cenario.Cenario(
+#     cenarioName,
+#     gameSection,
+#     cenarioLongitudes,
+#     cenarioLatitudes,
+#     cenarioInitialCoordinate,
+#     cenarioVelocity,
+#     game
+# )
 
 
 arrow = ArrowKey.ArrowKey()
@@ -92,5 +91,4 @@ while game.playing :
     game.update(now.time())
 
 pg.quit()
-print(image.imageLibrary)
 #sys.exit()

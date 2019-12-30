@@ -1,4 +1,5 @@
 import pygame as pg
+import time as now
 from model import Screen, Frame
 import os
 import ctypes
@@ -68,7 +69,7 @@ class Game:
 
         self.screen = Screen.Screen(self)
 
-        self.frame = Frame.Frame(timeNow,self)
+        self.frame = Frame.Frame(now.time(),self)
 
         self.playing = True
 
@@ -95,7 +96,6 @@ class Game:
 
     def renderOrder(self,object):
         return object.type,object.spaceCostRect.bottom
-        # return object.spaceCostRect.bottom
 
     def addNewObject(self,object):
         self.objects[object.name] = object

@@ -1,10 +1,10 @@
 import pygame as pg
 import numpy as np
 from model import Game
-from function import image
+from function import imageFunction
 
 class ObjectTypes:
-    CENARIO = '00 cenario'
+    CENARIO = '0  cenario'
     STANDARD_OBJECT = '10 standard_object'
 
     def getType(type):
@@ -26,7 +26,7 @@ class Object:
         self.size[1] = int(np.ceil(self.size[1] * self.scaleFactor))
 
         self.imagePath = game.imagePath + self.folder + self.name + '.png'
-        self.image = pg.transform.smoothscale(image.getImage(self.imagePath,game),self.size)
+        self.image = pg.transform.smoothscale(imageFunction.getImage(self.imagePath,game),self.size)
         self.imageSurface = pg.Surface(self.size,pg.HWSURFACE|pg.SRCALPHA)#.convert_alpha().set_alpha(10)
         self.imageSurface.blit(self.image, (0,0))
 

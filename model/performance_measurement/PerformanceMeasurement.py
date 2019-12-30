@@ -1,5 +1,6 @@
 import numpy as np
 from model import Game, Object, Cenario
+from function import imageFunction
 
 class PerformanceMeasurement():
     def __init__(self,game,folder,amountOfThings,percentualBigThings,
@@ -20,7 +21,6 @@ class PerformanceMeasurement():
         bigObjectSpaceCostSize = [200,100]
         bigObjectSpaceCostSize = None
         if self.mustPopulate :
-            # game.objects[self.objectName] = Object.Object(
             Object.Object(
                 self.objectName,
                 folder,
@@ -38,6 +38,8 @@ class PerformanceMeasurement():
     def exitGame(self,mouse,game) :
         if mouse.position[0]==game.devScreenSize[0]-1 and mouse.position[1]==0 :
             game.playing = False
+            for image in imageFunction.imageLibrary :
+                print(image)
 
     def itColided(self,objectName,game) :
         if game.objects[objectName].collides :
@@ -65,7 +67,6 @@ class PerformanceMeasurement():
             else :
                 objectProportion = self.objectSmallProportion
 
-            # game.objects[self.objectName + str(len(game.objects))] = Object.Object(
             Object.Object(
                 self.objectName + str(len(game.objects)),
                 folder,
