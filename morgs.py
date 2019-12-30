@@ -18,7 +18,7 @@ colors =    {
             'backgroundColor' : (237,201,202),
             'red' : (255,0,0)
             }
-fps = 30
+fps = 60
 aps = 30
 game = Game.Game(name,fps,aps,now.time(),colors)
 
@@ -35,16 +35,16 @@ performanceMeasurement = pm.PerformanceMeasurement(
     mustPopulate = True
 )
 
-cenarioName = 'cenario'
-cenarioPosition = [0,0]
-Cenario.BasicCenarioClass(
-    cenarioName,
-    gameSection,
-    cenarioPosition,
-    [200,200],
-    .5,
-    game
-)
+# cenarioName = 'cenario'
+# cenarioPosition = [0,0]
+# Cenario.BasicCenarioClass(
+#     cenarioName,
+#     gameSection,
+#     cenarioPosition,
+#     [200,200],
+#     .5,
+#     game
+# )
 # cenarioName = 'cenario'
 # cenarioLongitudes = 4
 # cenarioLatitudes = 3
@@ -59,7 +59,7 @@ Cenario.BasicCenarioClass(
 #     cenarioVelocity,
 #     game
 # )
-
+Cenario.OneImageCenario('cenario',gameSection,.5,game)
 
 arrow = ArrowKey.ArrowKey()
 mouse = Mouse.Mouse(game)

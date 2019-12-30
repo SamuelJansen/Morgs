@@ -3,6 +3,20 @@ import numpy as np
 from model import Game, Object
 from function import imageFunction
 
+class OneImageCenario(Object.Object):
+    def __init__(self,name,folder,velocity,game):
+        cenarioPosition = [0,0]
+        Object.Object(
+            name,
+            folder,
+            cenarioPosition,
+            game.size,
+            game.scaleRange,
+            velocity,
+            game,
+            type=Object.ObjectTypes.CENARIO
+        )
+
 class BasicCenarioClass(Object.Object):
     def __init__(self,name,folder,position,size,velocity,game):
         self.size = [game.size[0]//4,game.size[1]//3]
