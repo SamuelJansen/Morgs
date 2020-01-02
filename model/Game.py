@@ -6,10 +6,16 @@ import ctypes
 from function import setting
 from operator import attrgetter
 
-class Aplication:
+class Game:
     '''
     It defines the game characteristics'''
-    def __init__(self,name,fps,aps,colors,position=(0,0),scaleRange=1000):
+    def __init__(self,name,fps,aps,colors,
+                position=(0,0),
+                scaleRange=1000,
+                imagePath = 'resourse/image/',
+                soundPath = 'resourse/sound/',
+                settingsPath = None
+        ):
         '''
         Game()
         name    --> It's the game's name
@@ -17,9 +23,10 @@ class Aplication:
         fps     --> frames per second
         apf     --> actions per frame'''
         self.name = name
-        self.imagePath = 'resourses/images/'
-        self.soundPath = 'resourses/souds/'
-        self.settingsPath = 'resourses/' + self.name + '.ht'
+        self.imagePath = imagePath
+        self.soundPath = soundPath
+        if not settingsPath :
+            self.settingsPath = 'resourse/' + self.name + '.ht'
         self.color = colors
 
         self.scaleRange = scaleRange
@@ -32,7 +39,11 @@ class Aplication:
         SetWindowPos = ctypes.windll.user32.SetWindowPos
         pg.mixer.pre_init(44100,16,32,0)
         pg.init()
-        pg.mixer.init()
+        try :
+            pg.mixer.init()
+        except :
+            print("Mixer module not initialized")
+
         pg.display.set_caption(self.name)
 
         if self.settings['screenSize']==[0,0] :

@@ -16,9 +16,10 @@ def getImage(path,size,game) :
             canonicalizedPath = path.replace('/',os.sep).replace('\\',os.sep)
             image = pg.image.load(canonicalizedPath)#.convert_alpha()
         except :
-            # path = game.imagePath+'standard_image.png'
+            path = game.imagePath+'standard_image.png'
+            print(game.imagePath)
             # path = game.imagePath+'character_token.png'
-            path = game.imagePath+'bola.png'
+            # path = game.imagePath+'bola.png'
             canonicalizedPath = path.replace('/',os.sep).replace('\\',os.sep)
             image = pg.image.load(canonicalizedPath)#.convert_alpha()
         image = pg.transform.smoothscale(image,size)#.convert_alpha()
@@ -45,7 +46,7 @@ def newImageSurface(image,size) :
     # imageSurface = pg.Surface(size,pg.HWSURFACE)
     # imageSurface = pg.Surface(size,pg.DOUBLEBUF)
     # imageSurface = pg.Surface(size)
-    
+
     imageSurface.blit(image,(0,0))
     return imageSurface
 

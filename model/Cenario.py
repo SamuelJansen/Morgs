@@ -55,6 +55,7 @@ class Cenario(Object.Object):
             cenarioSubImagePath = game.imagePath + self.folder + Object.ObjectTypes.getType(Object.ObjectTypes.CENARIO) + '/' + cenarioSubImageName  + '.png'
             imageFunction.saveImage(cenarioSubImage,cenarioSubImagePath)
 
+            ###- the line bellow actually creates these objects
             self.coordinatesName.append(Object.Object(
                 cenarioSubImageName,
                 self.folder,

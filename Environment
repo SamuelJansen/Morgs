@@ -2,9 +2,14 @@
 cd C:\Users\Samuel Jansen\Morgs
 morgs.py
 
-
+pip install virtualenv
 virtualenv --system-site-packages -p python3 ./venv
 .\venv\Scripts\activate
 pip install --upgrade pip
 pip list
 deactivate
+
+requeriments
+pip install numpy
+pip install pygame
+pip install virtualenv

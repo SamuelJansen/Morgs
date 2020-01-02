@@ -1,4 +1,5 @@
-
+import os
+clear = lambda: os.system('cls')
 
 class TimeErrorControl:
     '''
@@ -25,6 +26,7 @@ class TimeErrorControl:
                 frame.timeOveralError = 0
 
             if mustPrint :
+                clear()
                 print(f'''      Main loop -- It should be 1: {self.now-self.before}
                 timeNow = {timeNow}, frame.timeNext = {frame.timeNext}
                 frame.timeError         = {frame.timeError}
@@ -33,5 +35,5 @@ class TimeErrorControl:
                 frame.fpsCounter    = {frame.fpsCounter}
                 frame.apsCounter    = {frame.apsCounter}
                 innerLoops      = {self.innerLoops}''')
-                
+
             self.innerLoops = 0
