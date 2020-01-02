@@ -21,16 +21,15 @@ class Object:
         self.type = type
         self.size = size.copy()
         self.scale = scale
-        self.scaleFactor = (self.scale * game.screenSize[1]) / (game.scaleRange * self.size[1])
+        self.scaleFactor = (self.scale * game.size[1]) / (game.scaleRange * self.size[1])
         self.size[0] = int(np.ceil(self.size[0] * self.scaleFactor))
         self.size[1] = int(np.ceil(self.size[1] * self.scaleFactor))
 
-        self.imagePath = game.imagePath + self.folder + self.name + '.png'
-        self.image = pg.transform.smoothscale(imageFunction.getImage(self.imagePath,game),self.size)
-        self.imageSurface = pg.Surface(self.size,pg.HWSURFACE|pg.SRCALPHA)#.convert_alpha().set_alpha(10)
-        self.imageSurface.blit(self.image, (0,0))
-
         self.rect = pg.Rect(position[0],position[1],self.size[0],self.size[1])
+
+        self.imagePath = game.imagePath + self.folder + self.name + '.png'
+        self.image = imageFunction.getImage(self.imagePath,self.size,game)
+        self.imageSurface = imageFunction.newImageSurface(self.image,self.size)
 
         if spaceCostSize :
             self.spaceCostSize = spaceCostSize.copy()
@@ -56,30 +55,24 @@ class Object:
         '''
         It updates the object position
         updatePosition(move,game)'''
-        originalSpaceCostRect = self.spaceCostRect.copy()
         if move[0]!=0 or move[1]!=0 :
             module = ( (move[0]**2+move[1]**2)**(1/2) ) / self.velocity
             xMovement = move[0]/module
             yMovement = move[1]/module
             self.spaceCostRect.move_ip(xMovement,yMovement)
             if self.itColided(game) :
-                self.spaceCostRect = originalSpaceCostRect
+                self.spaceCostRect.move_ip(-xMovement,-yMovement)
             else :
                 self.rect.move_ip(xMovement,yMovement)
 
     def itColided(self,game):
         if self.collides :
             colisionIndexes = self.spaceCostRect.collidelistall(game.spaceCostObjectsPositionRectList)
-            # try :
-            #     if list(game.collidableObjects.keys()).index(self.name) in colisionIndexes :
-            #         return len(colisionIndexes)>1
-            #     # return len(colisionIndexes)>0
-            # except :
-            #     pass
             if list(game.collidableObjects.keys()).index(self.name) in colisionIndexes :
                 return len(colisionIndexes)>1
-            # return len(colisionIndexes)>0
+            return len(colisionIndexes)>0
         return False
 
+
     def getPosition(self):
-        return [self.spaceCostRect[0],self.rect[1]] ###- upper left corner
+        return [self.self.rect[0],self.rect[1]] ###- upper left corner

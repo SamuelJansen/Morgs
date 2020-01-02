@@ -39,9 +39,11 @@ class Frame:
         self.newSecond = False
         if timeNow>self.timeNext :
             self.new = True
-            self.timeError += self.correctionFactor * ( timeNow - self.timeNext - self.timeError )
+            self.timeError += self.correctionFactor * (timeNow - self.timeNext - self.timeError)
             if self.timeError<0 :
                 self.timeError = 0
+            elif self.timeError > 1 :
+                self.timeError = .95
             if self.counter<game.fps-1 :
                 self.counter += 1
             else :
@@ -57,6 +59,8 @@ class Frame:
             self.apfTimeError += self.correctionFactor * (timeNow - self.apfTimeNext - self.apfTimeError)
             if self.apfTimeError<0 :
                 self.apfTimeError = 0
+            elif self.apfTimeError > 1 :
+                self.apfTimeError = .95
             if self.apfCounter<self.apf-1 :
                 self.apfCounter += 1
             else :

@@ -9,24 +9,24 @@ from operator import attrgetter
 class Game:
     '''
     It defines the game characteristics'''
-    def __init__(self,name,fps,aps,timeNow,colors,position=(0,0),scaleRange=1000):
+    def __init__(self,name,fps,aps,colors,position=(0,0),scaleRange=1000):
         '''
-        Game(name,screenSize,colors,fps,apf)
+        Game()
         name    --> It's the game's name
-        size    --> It's the screen size
         colors  --> It's a dictionary with color's names as keys
         fps     --> frames per second
         apf     --> actions per frame'''
         self.name = name
         self.imagePath = 'resourses/images/'
         self.soundPath = 'resourses/souds/'
+        self.settingsPath = 'resourses/' + self.name + '.ht'
         self.color = colors
 
         self.scaleRange = scaleRange
         self.fps = fps
         self.aps = aps
 
-        self.settings = setting.getSettings(self.name)
+        self.settings = setting.getSettings(self.settingsPath)
 
         os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % position
         SetWindowPos = ctypes.windll.user32.SetWindowPos
@@ -36,15 +36,21 @@ class Game:
         pg.display.set_caption(self.name)
 
         if self.settings['screenSize']==[0,0] :
-            self.screenMode = pg.display.set_mode([0,0],pg.FULLSCREEN)
-            screenSizeX, screenSizeY = self.screenMode.get_size()
-            self.screenSize = [screenSizeX, screenSizeY]
-            self.size = self.screenSize
-            self.screenMode = pg.display.set_mode(self.screenSize,pg.NOFRAME|pg.HWSURFACE|pg.DOUBLEBUF)
+            self.screenModule = pg.display.set_mode([0,0],pg.FULLSCREEN)
+            screenSizeX, screenSizeY = self.screenModule.get_size()
+            self.size = [screenSizeX, screenSizeY]
         else :
-            self.screenSize = self.settings['screenSize']
-            self.size = self.screenSize
-            self.screenMode = pg.display.set_mode(self.screenSize,pg.NOFRAME|pg.HWSURFACE|pg.DOUBLEBUF)
+            self.size = self.settings['screenSize']
+        self.screenModule = pg.display.set_mode(self.size,pg.NOFRAME|pg.HWSURFACE|pg.DOUBLEBUF|pg.SRCALPHA,32)
+        # self.screenModule = pg.display.set_mode(self.size,pg.NOFRAME|pg.HWSURFACE|pg.SRCALPHA,32)
+        # self.screenModule = pg.display.set_mode(self.size,pg.NOFRAME|pg.SRCALPHA,32)
+        # self.screenModule = pg.display.set_mode(self.size,pg.NOFRAME|pg.HWSURFACE|pg.DOUBLEBUF|pg.SRCALPHA)
+        # self.screenModule = pg.display.set_mode(self.size,pg.NOFRAME|pg.HWSURFACE|pg.SRCALPHA)
+        # self.screenModule = pg.display.set_mode(self.size,pg.NOFRAME|pg.SRCALPHA)
+        # self.screenModule = pg.display.set_mode(self.size,pg.NOFRAME|pg.HWSURFACE|pg.DOUBLEBUF)
+        # self.screenModule = pg.display.set_mode(self.size,pg.NOFRAME|pg.HWSURFACE)
+        # self.screenModule = pg.display.set_mode(self.size,pg.NOFRAME|pg.DOUBLEBUF)
+        # self.screenModule = pg.display.set_mode(self.size)
 
         SetWindowPos(
             pg.display.get_wm_info()['window'],
@@ -54,11 +60,11 @@ class Game:
             0,
             0,
             0x0001 )
-        self.velocityControl = (100 * self.screenSize[0]) / (self.aps * 1920)
+        self.velocityControl = (100 * self.size[0]) / (self.aps * 1920)
 
         self.devScreenSize = (1000,564)
-        self.devResize = [self.devScreenSize[0]/self.screenSize[0],self.devScreenSize[1]/self.screenSize[1]]
-        print(f'screenSize = {self.screenSize}, devScreenSize = {self.devScreenSize}, devResize = {self.devResize}')
+        self.devResize = [self.devScreenSize[0]/self.size[0],self.devScreenSize[1]/self.size[1]]
+        print(f'size = {self.size}, devScreenSize = {self.devScreenSize}, devResize = {self.devResize}')
 
         self.longitudesImageOnScreen = 4
         self.latitudesImageOnScreen = 3
@@ -68,16 +74,22 @@ class Game:
         self.spaceCostObjectsPositionRectList = []
 
         self.screen = Screen.Screen(self)
-
-        self.frame = Frame.Frame(now.time(),self)
+        self.frame = None
 
         self.playing = True
+
+    def createFrame(self,timeNow):
+        if self.frame :
+            print('Frame already created')
+        else :
+            self.frame = Frame.Frame(timeNow,self)
 
     def updateSpaceCostRectList(self):
         ###- https://www.pygame.org/docs/ref/rect.html
         ###- self.objects = {object.name:object for object in (sorted(self.objects.values(), key=attrgetter('spaceCostRect.top')))}
-        self.objects = {object.name:object for object in (sorted(self.objects.values(), key=self.renderOrder))}
+        self.objects = {object.name:object for object in sorted(self.objects.values(), key=self.renderOrder)}
         self.collidableObjects = {object.name:object for object in self.objects.values() if object.collides}
+        # self.collidableObjects = {object.name:object for object in sorted(self.objects.values(),key=self.renderOrder) if object.collides}
         self.spaceCostObjectsPositionRectList = [object.spaceCostRect for object in self.collidableObjects.values()]
 
     def updateScreen(self):

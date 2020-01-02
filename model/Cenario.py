@@ -17,32 +17,6 @@ class OneImageCenario(Object.Object):
             type=Object.ObjectTypes.CENARIO
         )
 
-class BasicCenarioClass(Object.Object):
-    def __init__(self,name,folder,position,size,velocity,game):
-        self.size = [game.size[0]//4,game.size[1]//3]
-        self.scale = game.scaleRange/3
-        self.amountOfColumnPieces = 4
-        self.amountOfLinePieces = 3
-        self.amountOfPieces = self.amountOfColumnPieces * self.amountOfLinePieces
-        self.piecesName = []
-        cenarioPiecePosition = []
-        for piece in range(self.amountOfPieces) :
-            self.piece = piece
-            cenarioPiecePosition = [
-                position[0]+int(np.ceil((piece%self.amountOfColumnPieces)*self.size[0])),
-                position[1]+int(np.ceil((piece%self.amountOfLinePieces)*self.size[1]))
-            ]
-            self.piecesName.append(Object.Object(
-                name+str(self.piece),
-                folder,
-                cenarioPiecePosition,
-                self.size,
-                self.scale,
-                velocity,
-                game,
-                type=Object.ObjectTypes.CENARIO
-            ).name)
-
 class Cenario(Object.Object):
     def __init__(self,name,folder,longitudes,latitudes,initialCoordinate,velocity,game):
         '''
@@ -66,9 +40,9 @@ class Cenario(Object.Object):
             self.coordinateSize[0]*self.longitudes,
             self.coordinateSize[1]*self.latitudes
         ]
-        self.cenarioImage = pg.transform.smoothscale(imageFunction.getImage(self.imagePath,game),self.size)
-        self.cenarioImageSurface = pg.Surface(self.size,pg.HWSURFACE|pg.SRCALPHA)#.convert_alpha().set_alpha(10)
-        self.cenarioImageSurface.blit(self.cenarioImage, (0,0))
+        self.cenarioImage = imageFunction.getImage(self.imagePath,self.size,game)
+        self.rect = pg.Rect(0,0,self.size[0],self.size[1])
+        self.cenarioImageSurface = imageFunction.newImageSurface(self.cenarioImage,self.size)
         self.coordinatesName = []
         for coordinateIndex in range(self.coordinatesIndex) :
             coordinatePosition = [

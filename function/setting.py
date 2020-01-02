@@ -1,8 +1,8 @@
-def getSettings(name) :
+def getSettings(path) :
     '''
     It gets overal Game Settings'''
     settings = {}
-    with open(name+'.ht','r',encoding='utf-8') as settingsFile :
+    with open(path,'r',encoding='utf-8') as settingsFile :
         allSettings = settingsFile.readlines()
     for line,setting in enumerate(allSettings) :
         ###- print(f'setting = {setting}, line = {line}')

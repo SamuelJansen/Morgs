@@ -18,16 +18,19 @@ class PerformanceMeasurement():
         self.objectSmallProportion = objectSmallProportion
         self.objectVelocity = objectVelocity
 
-        bigObjectSpaceCostSize = [200,100]
-        bigObjectSpaceCostSize = None
+        bigObjectSize = self.objectSize.copy()
+        bigObjectPosition = [200,200]
+        bigObjectScale = 100
+        bigObjectSpaceCostSize = self.objectSpaceCostSize.copy()
+        # bigObjectSpaceCostSize = None
         if self.mustPopulate :
             Object.Object(
                 self.objectName,
                 folder,
-                [200,200],
-                [200,200],
-                100,
-                .5,
+                bigObjectPosition,
+                bigObjectSize,
+                bigObjectScale,
+                1.5,
                 game,
                 spaceCostSize=bigObjectSpaceCostSize
             )
@@ -70,14 +73,13 @@ class PerformanceMeasurement():
             Object.Object(
                 self.objectName + str(len(game.objects)),
                 folder,
-                [game.screenSize[0]*np.random.random_sample(),game.screenSize[1]*np.random.random_sample()],
+                [game.size[0]*np.random.random_sample(),game.size[1]*np.random.random_sample()],
                 self.objectSize,
                 objectProportion,
                 self.objectVelocity,
                 game,
                 spaceCostSize = self.objectSpaceCostSize
             )
-            # print(f'{game.objects[self.objectName + str(len(game.objects)-1)].name} object added to the game')
         else :
             self.populated = True
             print('PerformanceMeasurement is populated')
