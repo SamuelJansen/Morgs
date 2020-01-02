@@ -6,7 +6,7 @@ import ctypes
 from function import setting
 from operator import attrgetter
 
-class Game:
+class Aplication:
     '''
     It defines the game characteristics'''
     def __init__(self,name,fps,aps,colors,position=(0,0),scaleRange=1000):
