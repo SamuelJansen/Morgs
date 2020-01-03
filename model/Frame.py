@@ -69,7 +69,7 @@ class Frame:
         else :
             self.apfNew = False
         #- Dealling with time erros
-        self.correction.checkTimeError(timeNow,self,mustPrint=True)
+        self.correction.checkTimeError(timeNow,self,mustPrint=False)
         if self.newSecond :
             self.fpsCounter = 0
             self.apsCounter = 0

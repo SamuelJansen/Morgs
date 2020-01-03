@@ -31,6 +31,7 @@ def saveImage(image,path) :
     global imageLibrary
     pg.image.save(image, path)
     imageLibrary[path] = image
+    return image
 
 def newImageSurface(image,size) :
     imageSurface = pg.Surface(size,pg.HWSURFACE|pg.DOUBLEBUF|pg.SRCALPHA,32)
