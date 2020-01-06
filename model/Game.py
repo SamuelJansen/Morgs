@@ -4,7 +4,6 @@ from model import Screen, Frame
 import os
 import ctypes
 from function import setting
-from operator import attrgetter
 
 class Game:
     '''
@@ -34,15 +33,12 @@ class Game:
         self.aps = aps
 
         self.settings = setting.getSettings(self.settingsPath)
-
-        os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % position
-        SetWindowPos = ctypes.windll.user32.SetWindowPos
+        self.position = position
         pg.mixer.pre_init(44100,16,32,0)
+
+        os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % self.position
+        SetWindowPos = ctypes.windll.user32.SetWindowPos
         pg.init()
-        try :
-            pg.mixer.init()
-        except :
-            print("Mixer module not initialized")
 
         pg.display.set_caption(self.name)
 
@@ -66,8 +62,8 @@ class Game:
         SetWindowPos(
             pg.display.get_wm_info()['window'],
             -1,
-            0, ###- x
-            0, ###- y
+            self.position[0], ###- x
+            self.position[1], ###- y
             0,
             0,
             0x0001 )
@@ -79,6 +75,11 @@ class Game:
 
         self.longitudesImageOnScreen = 4
         self.latitudesImageOnScreen = 3
+
+        try :
+            pg.mixer.init()
+        except :
+            print("Mixer module not initialized")
 
         self.objects = {}
         self.collidableObjects = {}
@@ -97,6 +98,7 @@ class Game:
 
     def updateSpaceCostRectList(self):
         ###- https://www.pygame.org/docs/ref/rect.html
+        ###- from operator import attrgetter
         ###- self.objects = {object.name:object for object in (sorted(self.objects.values(), key=attrgetter('spaceCostRect.top')))}
         self.objects = {object.name:object for object in sorted(self.objects.values(), key=self.renderOrder)}
         self.collidableObjects = {object.name:object for object in self.objects.values() if object.collides}

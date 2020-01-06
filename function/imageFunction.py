@@ -9,6 +9,7 @@ def getImage(path,size,game) :
     It also returns the     image.
     It works on mac and windows
     getImage(path)'''
+    ###- print(f'DEBUG getImage(path,size,game) --> path = {path}')
     global imageLibrary
     image = imageLibrary.get(path)
     if image==None :
