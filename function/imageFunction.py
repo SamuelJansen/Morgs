@@ -16,15 +16,15 @@ def getImage(path,size,game) :
             canonicalizedPath = path.replace('/',os.sep).replace('\\',os.sep)
             image = pg.image.load(canonicalizedPath)#.convert_alpha()
         except :
+            # print(game.imagePath)
             path = game.imagePath+'standard_image.png'
-            print(game.imagePath)
             # path = game.imagePath+'character_token.png'
             # path = game.imagePath+'bola.png'
             canonicalizedPath = path.replace('/',os.sep).replace('\\',os.sep)
             image = pg.image.load(canonicalizedPath)#.convert_alpha()
         image = pg.transform.smoothscale(image,size)#.convert_alpha()
     imageLibrary[path] = image
-    print('new image')
+    # print('new image')
     return image
 
 def saveImage(image,path) :
