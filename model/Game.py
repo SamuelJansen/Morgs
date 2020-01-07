@@ -4,6 +4,7 @@ from model import Screen, Frame
 import os
 import ctypes
 from function import setting
+from operator import attrgetter
 
 class Game:
     '''
@@ -75,6 +76,7 @@ class Game:
 
         self.longitudesImageOnScreen = 4
         self.latitudesImageOnScreen = 3
+        self.blitOrder = 0
 
         try :
             pg.mixer.init()
@@ -96,15 +98,6 @@ class Game:
         else :
             self.frame = Frame.Frame(timeNow,self)
 
-    def updateSpaceCostRectList(self):
-        ###- https://www.pygame.org/docs/ref/rect.html
-        ###- from operator import attrgetter
-        ###- self.objects = {object.name:object for object in (sorted(self.objects.values(), key=attrgetter('spaceCostRect.top')))}
-        self.objects = {object.name:object for object in sorted(self.objects.values(), key=self.renderOrder)}
-        self.collidableObjects = {object.name:object for object in self.objects.values() if object.collides}
-        # self.collidableObjects = {object.name:object for object in sorted(self.objects.values(),key=self.renderOrder) if object.collides}
-        self.spaceCostObjectsPositionRectList = [object.spaceCostRect for object in self.collidableObjects.values()]
-
     def updateScreen(self):
         '''
         It updates the screen image in the right order.
@@ -119,8 +112,22 @@ class Game:
     def update(self,timeNow):
         self.updateFrame(timeNow)
 
+    def updateSpaceCostRectList(self):
+        ###- https://www.pygame.org/docs/ref/rect.html
+        # self.objects = {object.name:object for object in (sorted(self.objects.values(), key=attrgetter('blitOrder','spaceCostRect.bottom')))}
+        # self.objects = {object.name:object for object in sorted(self.objects.values(), key=self.renderOrder)}
+        # self.objects = {object.name:object for object in sorted(self.objects.values(), key=lambda object:(object.blitOrder,object.spaceCostRect.bottom))}
+
+        # for object in self.objects :
+        #     print(f'{self.objects[object].name} object is type {self.objects[object].type} and has {self.objects[object].blitOrder} blit order')
+        # print()
+
+        # self.collidableObjects = {object.name:object for object in self.objects.values() if object.collides}
+        self.collidableObjects = {object.name:object for object in sorted(self.objects.values(),key=self.renderOrder) if object.collides}
+        self.spaceCostObjectsPositionRectList = [object.spaceCostRect for object in self.collidableObjects.values()]
+
     def renderOrder(self,object):
-        return object.type,object.spaceCostRect.bottom
+        return object.blitOrder,object.spaceCostRect.bottom
 
     def addNewObject(self,object):
         self.objects[object.name] = object

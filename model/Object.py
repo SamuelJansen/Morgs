@@ -6,12 +6,26 @@ from model import Game
 from function import imageFunction
 
 class ObjectTypes:
-    CENARIO = '0 cenario'
-    STANDARD_OBJECT = '10 standard_object'
-    USER_INTERFACE = '100 user_interface'
+    CENARIO = 'cenario'
+    STANDARD_OBJECT = 'standard_object'
+    USER_INTERFACE = 'user_interface'
 
-    def getType(type):
-        return type.split()[1]
+    types = {
+        0 : 'cenario',
+        10 : 'standard_object',
+        100 : 'user_interface'
+    }
+
+    def getType(typeIndex):
+        return ObjectTypes.types[typeIndex]
+
+    def getBlitOrder(object,father=None):
+        if object.name == father.name :
+            blitOrder = list(ObjectTypes.types.keys())[list(ObjectTypes.types.values()).index(object.type)]
+        else :
+            blitOrder = father.blitOrder + 1
+        return blitOrder
+
 
 class Object:
     '''
@@ -26,12 +40,16 @@ class Object:
         '''
         Object()'''
         self.name = name
+
         if not father :
             self.father = game
             self.type = type
         else :
             self.father = father
-            self.type = self.getType(type)
+            self.type = father.type
+        self.blitOrder = ObjectTypes.getBlitOrder(self,father=self.father)
+        ###- print(f'{self.name} object type is {self.type} and its blit order is {self.blitOrder}')
+
         self.size = size.copy()
         self.scale = scale
         self.scaleFactor = (self.scale * game.size[1]) / (game.scaleRange * self.size[1])
@@ -41,11 +59,13 @@ class Object:
         self.position = position ###- self.getPosition() #
         self.rect = pg.Rect(self.position[0],self.position[1],self.size[0],self.size[1])
 
-        self.folder = folder + ObjectTypes.getType(type) + '/'
+        self.folder = folder + self.type + '/'
+        ###- print(f'imagePath = {imagePath}')
         if not imagePath :
             self.imagePath = game.imagePath + self.folder + self.name + '.png'
         else :
-            self.imagePath = imagePath
+            self.imagePath = imagePath + self.name + '.png'
+        ###- print(f'object.imagePath = {self.imagePath}')
         self.image = imageFunction.getImage(self.imagePath,self.size,game)
         self.imageSurface = imageFunction.newImageSurface(self.image,self.size)
 
@@ -69,7 +89,7 @@ class Object:
         self.velocity = velocity * game.velocityControl
 
         self.objects = {}
-        self.father.addNewObject(self)
+        game.addNewObject(self)
         ###- print(f'{self.name} created successfully')
 
     def updatePosition(self,move,game):
@@ -97,13 +117,10 @@ class Object:
 
     def getPosition(self):
         return [self.rect[0],self.rect[1]] ###- upper left corner
-
-    def addNewObject(self,object):
-        self.objects[object.name] = object
-
-    def getType(self,type):
-        type = type.strip().split()
-        type[1] = str(int(type[1])+int(self.father.type.strip.split()[0]))
-        type = ''.join(type)
-        print(f'Object {self.name} has the following type = {type}')
-        return type
+    #
+    # def addNewObject(self,object,game):
+    #     # self.objects[object.name] = object
+    #     if object.name == game.name :
+    #         game.objects[object.name] = object
+    #     else :
+    #         self.objects[object.name] = object
